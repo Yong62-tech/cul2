@@ -1,9 +1,12 @@
-// 获取显示屏元素
+// 获取 DOM 元素
 const display = document.getElementById('display');
+const historyList = document.getElementById('history-list');
+
+// 用于存储历史记录的数组
+let calculationHistory = [];
 
 // 向显示屏追加内容
 function appendToDisplay(value) {
-    // 防止连续输入多个小数点或运算符（基础检查）
     const lastChar = display.value.slice(-1);
     const operators = ['/', '*', '-', '+'];
     const isOperator = operators.includes(value);
@@ -11,35 +14,33 @@ function appendToDisplay(value) {
     const lastIsDot = lastChar === '.';
     const isDot = value === '.';
 
-    // 如果最后一位是运算符，并且当前输入也是运算符，则替换最后一位 (例如 5+* -> 5*)
+    // 处理特殊情况以改善用户体验
+    if (display.value === '错误') {
+        clearDisplay(); // 如果是错误状态，先清空
+    }
+
     if (lastIsOperator && isOperator) {
         display.value = display.value.slice(0, -1) + value;
         return;
     }
-    // 如果最后一位是小数点，并且当前输入也是小数点，则不追加
     if (lastIsDot && isDot) {
         return;
     }
-    // 简单防止以运算符开头 (允许负号开头)
     if (display.value === '' && isOperator && value !== '-') {
         return;
     }
-     // 防止出现类似 '05' 这样的数字，如果当前是0，下一个不是小数点，则替换0
     if (display.value === '0' && !isDot && !isOperator) {
          display.value = value;
          return;
     }
-     // 防止小数点前没有数字，例如 .5 -> 0.5
     if (display.value === '' && isDot) {
         display.value = '0.';
         return;
     }
-    // 防止运算符后直接跟小数点，例如 5+. -> 5+0.
     if (lastIsOperator && isDot) {
         display.value += '0.';
         return;
     }
-
 
     display.value += value;
 }
@@ -51,28 +52,96 @@ function clearDisplay() {
 
 // 删除最后一个字符
 function deleteLast() {
-    display.value = display.value.slice(0, -1);
+    if (display.value === '错误') {
+        clearDisplay();
+    } else {
+        display.value = display.value.slice(0, -1);
+    }
 }
 
 // 计算结果
 function calculateResult() {
-    try {
-        // 使用 Function 构造函数代替 eval 来提高一点安全性
-        // 注意：这仍然可能执行任意代码，但在受控环境下比直接 eval 稍好
-        // 对于简单的计算器来说，这是常见的做法，但在需要更高安全性的场景下应避免
-        const calculate = new Function('return ' + display.value);
-        let result = calculate();
+    const expression = display.value;
+    if (!expression || expression === '错误') return;
 
-        // 处理浮点数精度问题
-        if (typeof result === 'number' && !Number.isInteger(result)) {
-            result = parseFloat(result.toFixed(10)); // 保留最多10位小数
+    try {
+        // 修正一些可能导致错误的表达式，例如以运算符结尾
+        let safeExpression = expression;
+        const operators = ['/', '*', '-', '+'];
+        if (operators.includes(safeExpression.slice(-1))) {
+            safeExpression = safeExpression.slice(0, -1); // 移除末尾的操作符
         }
 
+        if (!safeExpression) return; // 如果移除后为空，则不计算
+
+        // 使用 Function 构造函数进行计算
+        const calculate = new Function('return ' + safeExpression);
+        let result = calculate();
+
+        // 处理浮点数精度
+        if (typeof result === 'number' && !Number.isInteger(result)) {
+            result = parseFloat(result.toFixed(10));
+        }
+
+        // 检查结果是否为 NaN 或 Infinity
+        if (!Number.isFinite(result)) {
+             throw new Error("结果无效"); // 抛出错误以显示 "错误"
+        }
+
+
         display.value = result;
+
+        // 添加到历史记录 (只有在原始表达式和计算结果都有效时)
+        const historyEntry = `${expression} = ${result}`; // 使用原始表达式记录
+        addToHistory(historyEntry);
+
     } catch (error) {
-        // 如果表达式无效，显示错误信息
+        console.error("Calculation Error:", error); // 在控制台打印错误详情
         display.value = '错误';
-        // 短暂显示错误后清空
-        setTimeout(clearDisplay, 1500);
+        // 不自动清除错误信息，让用户手动清除
+        // setTimeout(clearDisplay, 1500);
     }
 }
+
+// 添加条目到历史记录数组并更新显示
+function addToHistory(entry) {
+    calculationHistory.unshift(entry); // 添加到数组开头
+
+    // (可选) 限制历史记录的数量
+    // if (calculationHistory.length > 20) {
+    //     calculationHistory.pop();
+    // }
+
+    updateHistoryDisplay(); // 更新页面显示
+}
+
+// 更新页面上的历史记录列表
+function updateHistoryDisplay() {
+    historyList.innerHTML = ''; // 清空当前列表
+
+    calculationHistory.forEach(entry => {
+        const listItem = document.createElement('li');
+        listItem.textContent = entry;
+        historyList.appendChild(listItem);
+    });
+}
+
+// 清除历史记录（由按钮调用）
+function clearHistoryLog() {
+    calculationHistory = []; // 清空数组
+    updateHistoryDisplay(); // 更新显示（变为空）
+}
+
+// (可选) 页面加载时可以尝试从 localStorage 加载/保存历史记录
+// function loadHistory() {
+//     const savedHistory = localStorage.getItem('calculatorHistory');
+//     if (savedHistory) {
+//         calculationHistory = JSON.parse(savedHistory);
+//         updateHistoryDisplay();
+//     }
+// }
+// function saveHistory() {
+//     localStorage.setItem('calculatorHistory', JSON.stringify(calculationHistory));
+// }
+// 在 addToHistory 和 clearHistoryLog 中调用 saveHistory()
+// window.onload = loadHistory;
