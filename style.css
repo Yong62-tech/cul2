@@ -1,7 +1,7 @@
 /* --- 基本和计算器样式 --- */
 body {
     display: flex;
-    flex-direction: column; /* 让计算器和历史记录垂直排列 */
+    flex-direction: column; /* 保持整体垂直排列 */
     justify-content: center;
     align-items: center;
     min-height: 100vh;
@@ -9,6 +9,16 @@ body {
     font-family: sans-serif;
     padding: 20px; /* 给页面边缘一些空间 */
     box-sizing: border-box;
+}
+
+.calculator-container {
+    display: flex;
+    flex-direction: row; /* 水平排列计算器和历史记录 */
+    justify-content: center;
+    align-items: flex-start; /* 顶部对齐 */
+    gap: 20px; /* 计算器和历史记录之间的间距 */
+    width: 100%;
+    max-width: 700px; /* 增加容器最大宽度 */
 }
 
 .calculator {
@@ -106,14 +116,14 @@ button:active {
 
 /* --- 历史记录区域样式 --- */
 .history-container {
-    margin-top: 30px; /* 与计算器保持距离 */
     width: 100%; /* 宽度适应 */
-    max-width: 320px; /* 最大宽度与计算器一致 */
+    max-width: 280px; /* 稍微窄一点的历史记录区 */
+    height: 100%; /* 高度与计算器匹配 */
+    min-height: 400px; /* 设置最小高度 */
     padding: 15px;
     background-color: #e9e9e9; /* 浅灰色背景 */
     border-radius: 8px;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-    max-height: 200px; /* 设置最大高度，超出则滚动 */
     overflow-y: auto; /* 内容超出时显示垂直滚动条 */
     box-sizing: border-box;
     display: flex; /* 使用 flex 布局方便管理内部元素 */
@@ -137,7 +147,7 @@ button:active {
     margin: 0 0 10px 0; /* 列表底部留出空间给按钮 */
     flex-grow: 1; /* 列表区域占据剩余空间 */
     overflow-y: auto; /* 列表本身也可以滚动（如果内容超多）*/
-    min-height: 50px; /* 保证列表有最小高度 */
+    min-height: 280px; /* 保证列表有最小高度 */
 }
 
 #history-list li {
@@ -170,4 +180,22 @@ button:active {
 
 #clear-history:hover {
     background-color: #ec971f;
+}
+
+/* 响应式设计：在小屏幕上恢复为垂直排列 */
+@media (max-width: 700px) {
+    .calculator-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .history-container {
+        margin-top: 20px;
+        max-width: 320px; /* 与计算器同宽 */
+        min-height: 200px; /* 减小最小高度 */
+    }
+    
+    #history-list {
+        min-height: 100px; /* 减小列表最小高度 */
+    }
 }
