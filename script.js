@@ -146,3 +146,28 @@ function clearHistoryLog() {
     calculationHistory = []; // 清空数组
     updateHistoryDisplay(); // 更新显示（变为空）
 }
+
+// 监听键盘输入
+document.addEventListener('keydown', function(event) {
+    const key = event.key;
+
+    // 允许数字 0-9 和符号 + - * / . 输入
+    if ((key >= '0' && key <= '9') || key === '+' || key === '-' || key === '*' || key === '/' || key === '.') {
+        appendToDisplay(key);
+    }
+
+    // 允许回车键计算结果
+    if (key === 'Enter') {
+        calculateResult();
+    }
+
+    // 允许删除键
+    if (key === 'Backspace') {
+        deleteLast();
+    }
+
+    // 允许清除键
+    if (key === 'Escape') {
+        clearDisplay();
+    }
+});
