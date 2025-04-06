@@ -24,6 +24,7 @@ function appendToDisplay(value) {
         display.value = ''; // 清空显示屏
     }
 
+    // 当按下运算符时，保持当前显示内容
     if (lastIsOperator && isOperator) {
         display.value = display.value.slice(0, -1) + value;
         return;
