@@ -85,9 +85,8 @@ function calculateResult() {
 
         // 检查结果是否为 NaN 或 Infinity
         if (!Number.isFinite(result)) {
-             throw new Error("结果无效"); // 抛出错误以显示 "错误"
+            throw new Error("结果无效"); // 抛出错误以显示 "错误"
         }
-
 
         display.value = result;
 
@@ -95,13 +94,15 @@ function calculateResult() {
         const historyEntry = `${expression} = ${result}`; // 使用原始表达式记录
         addToHistory(historyEntry);
 
+        // 在显示结果后清空输入框，准备输入新的一项
+        setTimeout(clearDisplay, 500); // 延迟清空，确保用户看到结果
+
     } catch (error) {
         console.error("Calculation Error:", error); // 在控制台打印错误详情
         display.value = '错误';
-        // 不自动清除错误信息，让用户手动清除
-        // setTimeout(clearDisplay, 1500);
     }
 }
+
 
 // 添加条目到历史记录数组并更新显示
 function addToHistory(entry) {
