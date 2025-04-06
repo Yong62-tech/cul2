@@ -17,18 +17,17 @@ const maxLength = 15; // Max number of characters before shrinking font size
 function adjustDisplay() {
     const textLength = display.value.length;
 
+    // Calculate the font size based on the number of characters
     if (textLength > maxLength) {
-        // Calculate the new font size based on text length
         const fontSize = Math.max(minFontSize, maxFontSize * (maxLength / textLength));
         display.style.fontSize = `${fontSize}em`;
 
         // Move the text upwards as it overflows
-        const overflowAmount = (textLength - maxLength) * 0.1; // Amount to move up based on overflow
-        display.style.transform = `translateY(-${overflowAmount}em)`;
+        const overflowAmount = (textLength - maxLength) * 0.2; // Amount to move up based on overflow
+        display.style.transform = `translateY(-${overflowAmount}em)`; // Moves text upwards
     } else {
-        // Reset to normal font size and position if the text is within the limit
-        display.style.fontSize = `${maxFontSize}em`;
-        display.style.transform = 'translateY(0)';
+        display.style.fontSize = `${maxFontSize}em`; // Default font size
+        display.style.transform = 'translateY(0)'; // Reset position if text is within limit
     }
 }
 
