@@ -13,12 +13,12 @@ body {
 
 .calculator-container {
     display: flex;
-    flex-direction: row;
+    flex-direction: row; /* 水平排列计算器和历史记录 */
     justify-content: center;
-    align-items: flex-start;
-    gap: 20px;
+    align-items: flex-start; /* 顶部对齐 */
+    gap: 20px; /* 计算器和历史记录之间的间距 */
     width: 100%;
-    max-width: 700px; /* You can tweak this to fit your layout */
+    max-width: 700px; /* 增加容器最大宽度 */
 }
 
 .calculator {
@@ -116,20 +116,18 @@ button:active {
 
 /* --- 历史记录区域样式 --- */
 .history-container {
-    width: 100%; /* Use full width */
-    max-width: 320px; /* Match the max width of the calculator */
-    height: 450px; /* Set a fixed height for the history container */
+    width: 100%; /* 宽度适应 */
+    max-width: 320px; /* 稍微窄一点的历史记录区 */
+    height: 400px; /* 设置固定高度 */
     padding: 15px;
-    background-color: #e9e9e9;
+    background-color: #e9e9e9; /* 浅灰色背景 */
     border-radius: 8px;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-    overflow-y: auto; /* Enable vertical scrolling when content exceeds height */
+    overflow-y: auto; /* 内容超出时显示垂直滚动条 */
     box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
+    display: flex; /* 使用 flex 布局方便管理内部元素 */
+    flex-direction: column; /* 内部元素垂直排列 */
 }
-
-
 
 .history-container h2 {
     margin-top: 0;
@@ -185,15 +183,10 @@ button:active {
 
 /* 响应式设计：在小屏幕上恢复为垂直排列 */
 @media (max-width: 700px) {
-.calculator-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: flex-start;
-    gap: 20px;
-    width: 100%;
-    max-width: 700px; /* You can tweak this to fit your layout */
-}  
+    .calculator-container {
+        flex-direction: column;
+        align-items: center;
+    }
     
     .history-container {
         margin-top: 20px;
