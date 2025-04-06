@@ -12,17 +12,19 @@ let resultCalculated = false;
 const maxFontSize = 2; // 2em (default size)
 const minFontSize = 0.8; // Minimum font size when the display is full
 
-// Function to adjust font size based on the length of the display value
-function adjustFontSize() {
-    const maxLength = 15; // Max number of characters the display can hold before shrinking the font
+// Maximum number of characters to show in the display before moving text up
+const maxLength = 15;
+
+// Function to adjust display behavior when text is full
+function adjustDisplayPosition() {
+    // Check if the display text exceeds the maximum allowed length
     const textLength = display.value.length;
 
-    // If the text exceeds the max length, reduce the font size
-    if (textLength >= maxLength) {
-        const scaleFactor = Math.max(minFontSize, maxFontSize * (maxLength / textLength));
-        display.style.fontSize = `${scaleFactor}em`;
+    if (textLength > maxLength) {
+        const overflowAmount = textLength - maxLength;  // Calculate how much the text overflows
+        display.style.transform = `translateY(-${overflowAmount * 0.1}em)`;  // Move the text up by a small amount
     } else {
-        display.style.fontSize = `${maxFontSize}em`; // Default font size
+        display.style.transform = 'translateY(0)'; // Reset to normal position if the text is within limit
     }
 }
 
@@ -76,14 +78,14 @@ function appendToDisplay(value) {
     }
 
     display.value += value;
-    adjustFontSize(); // Adjust font size whenever new value is appended
+    adjustDisplayPosition(); // Adjust display position whenever new value is appended
 }
 
 // 清空显示屏
 function clearDisplay() {
     display.value = '';
     resultCalculated = false; // Reset the flag after clearing the display
-    adjustFontSize(); // Adjust font size after clearing
+    adjustDisplayPosition(); // Adjust display position after clearing
 }
 
 // 删除最后一个字符
@@ -92,7 +94,7 @@ function deleteLast() {
         clearDisplay();
     } else {
         display.value = display.value.slice(0, -1);
-        adjustFontSize(); // Adjust font size after deleting a character
+        adjustDisplayPosition(); // Adjust display position after deleting a character
     }
 }
 
@@ -132,12 +134,12 @@ function calculateResult() {
         addToHistory(historyEntry);
 
         resultCalculated = true; // Set the flag to indicate that the result was calculated
-        adjustFontSize(); // Adjust font size after calculation
+        adjustDisplayPosition(); // Adjust display position after calculation
 
     } catch (error) {
         console.error("Calculation Error:", error); // 在控制台打印错误详情
         display.value = '错误';
-        adjustFontSize(); // Adjust font size after error
+        adjustDisplayPosition(); // Adjust display position after error
     }
 }
 
