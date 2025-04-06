@@ -5,6 +5,9 @@ const historyList = document.getElementById('history-list');
 // 用于存储历史记录的数组
 let calculationHistory = [];
 
+// Track if the result was calculated
+let resultCalculated = false;
+
 // 向显示屏追加内容
 function appendToDisplay(value) {
     const lastChar = display.value.slice(-1);
@@ -19,9 +22,10 @@ function appendToDisplay(value) {
         clearDisplay(); // 如果是错误状态，先清空
     }
 
-    // 如果之前是计算结果，清除显示并开始新的输入
-    if (display.value !== '' && !isNaN(display.value)) {
-        display.value = ''; // 清空显示屏
+    // Clear display if a new calculation is to be started (after pressing "=")
+    if (resultCalculated && !isOperator && !isDot) {
+        display.value = ''; // Clear the display to start fresh
+        resultCalculated = false; // Reset the flag
     }
 
     // 当按下运算符时，保持当前显示内容
@@ -29,20 +33,25 @@ function appendToDisplay(value) {
         display.value = display.value.slice(0, -1) + value;
         return;
     }
+
     if (lastIsDot && isDot) {
         return;
     }
+
     if (display.value === '' && isOperator && value !== '-') {
         return;
     }
+
     if (display.value === '0' && !isDot && !isOperator) {
-         display.value = value;
-         return;
+        display.value = value;
+        return;
     }
+
     if (display.value === '' && isDot) {
         display.value = '0.';
         return;
     }
+
     if (lastIsOperator && isDot) {
         display.value += '0.';
         return;
@@ -54,6 +63,7 @@ function appendToDisplay(value) {
 // 清空显示屏
 function clearDisplay() {
     display.value = '';
+    resultCalculated = false; // Reset the flag after clearing the display
 }
 
 // 删除最后一个字符
@@ -100,6 +110,8 @@ function calculateResult() {
         const historyEntry = `${expression} = ${result}`; // 使用原始表达式记录
         addToHistory(historyEntry);
 
+        resultCalculated = true; // Set the flag to indicate that the result was calculated
+
     } catch (error) {
         console.error("Calculation Error:", error); // 在控制台打印错误详情
         display.value = '错误';
@@ -134,17 +146,3 @@ function clearHistoryLog() {
     calculationHistory = []; // 清空数组
     updateHistoryDisplay(); // 更新显示（变为空）
 }
-
-// (可选) 页面加载时可以尝试从 localStorage 加载/保存历史记录
-// function loadHistory() {
-//     const savedHistory = localStorage.getItem('calculatorHistory');
-//     if (savedHistory) {
-//         calculationHistory = JSON.parse(savedHistory);
-//         updateHistoryDisplay();
-//     }
-// }
-// function saveHistory() {
-//     localStorage.setItem('calculatorHistory', JSON.stringify(calculationHistory));
-// }
-// 在 addToHistory 和 clearHistoryLog 中调用 saveHistory()
-// window.onload = loadHistory;
