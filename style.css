@@ -29,6 +29,7 @@ body {
     width: 100%; /* 宽度适应 */
     max-width: 320px; /* 最大宽度 */
     box-sizing: border-box;
+    overflow: hidden; /* 防止溢出 */
 }
 
 #display {
