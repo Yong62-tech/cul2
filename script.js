@@ -19,6 +19,11 @@ function appendToDisplay(value) {
         clearDisplay(); // 如果是错误状态，先清空
     }
 
+    // 如果之前是计算结果，清除显示并开始新的输入
+    if (display.value !== '' && !isNaN(display.value)) {
+        display.value = ''; // 清空显示屏
+    }
+
     if (lastIsOperator && isOperator) {
         display.value = display.value.slice(0, -1) + value;
         return;
@@ -94,15 +99,11 @@ function calculateResult() {
         const historyEntry = `${expression} = ${result}`; // 使用原始表达式记录
         addToHistory(historyEntry);
 
-        // 在显示结果后清空输入框，准备输入新的一项
-        setTimeout(clearDisplay, 500); // 延迟清空，确保用户看到结果
-
     } catch (error) {
         console.error("Calculation Error:", error); // 在控制台打印错误详情
         display.value = '错误';
     }
 }
-
 
 // 添加条目到历史记录数组并更新显示
 function addToHistory(entry) {
