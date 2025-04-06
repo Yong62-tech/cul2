@@ -8,23 +8,27 @@ let calculationHistory = [];
 // Track if the result was calculated
 let resultCalculated = false;
 
-// Initial font size
-const maxFontSize = 2; // 2em (default size)
-const minFontSize = 0.8; // Minimum font size when the display is full
+// Initial font size and settings
+const maxFontSize = 2; // Default font size (in em)
+const minFontSize = 0.8; // Minimum font size when display is full
+const maxLength = 15; // Max number of characters before shrinking font size
 
-// Maximum number of characters to show in the display before moving text up
-const maxLength = 15;
-
-// Function to adjust display behavior when text is full
-function adjustDisplayPosition() {
-    // Check if the display text exceeds the maximum allowed length
+// Function to adjust font size and position based on the length of the input
+function adjustDisplay() {
     const textLength = display.value.length;
 
     if (textLength > maxLength) {
-        const overflowAmount = textLength - maxLength;  // Calculate how much the text overflows
-        display.style.transform = `translateY(-${overflowAmount * 0.1}em)`;  // Move the text up by a small amount
+        // Calculate the new font size based on text length
+        const fontSize = Math.max(minFontSize, maxFontSize * (maxLength / textLength));
+        display.style.fontSize = `${fontSize}em`;
+
+        // Move the text upwards as it overflows
+        const overflowAmount = (textLength - maxLength) * 0.1; // Amount to move up based on overflow
+        display.style.transform = `translateY(-${overflowAmount}em)`;
     } else {
-        display.style.transform = 'translateY(0)'; // Reset to normal position if the text is within limit
+        // Reset to normal font size and position if the text is within the limit
+        display.style.fontSize = `${maxFontSize}em`;
+        display.style.transform = 'translateY(0)';
     }
 }
 
@@ -78,14 +82,14 @@ function appendToDisplay(value) {
     }
 
     display.value += value;
-    adjustDisplayPosition(); // Adjust display position whenever new value is appended
+    adjustDisplay(); // Adjust font size and position whenever a new value is appended
 }
 
 // 清空显示屏
 function clearDisplay() {
     display.value = '';
     resultCalculated = false; // Reset the flag after clearing the display
-    adjustDisplayPosition(); // Adjust display position after clearing
+    adjustDisplay(); // Adjust display after clearing
 }
 
 // 删除最后一个字符
@@ -94,7 +98,7 @@ function deleteLast() {
         clearDisplay();
     } else {
         display.value = display.value.slice(0, -1);
-        adjustDisplayPosition(); // Adjust display position after deleting a character
+        adjustDisplay(); // Adjust display after deleting a character
     }
 }
 
@@ -134,12 +138,12 @@ function calculateResult() {
         addToHistory(historyEntry);
 
         resultCalculated = true; // Set the flag to indicate that the result was calculated
-        adjustDisplayPosition(); // Adjust display position after calculation
+        adjustDisplay(); // Adjust display after calculation
 
     } catch (error) {
         console.error("Calculation Error:", error); // 在控制台打印错误详情
         display.value = '错误';
-        adjustDisplayPosition(); // Adjust display position after error
+        adjustDisplay(); // Adjust display after error
     }
 }
 
