@@ -21,13 +21,9 @@ function adjustDisplay() {
     if (textLength > maxLength) {
         // Reduce font size starting at 14 characters
         const fontSize = Math.max(minFontSize, maxFontSize * (maxLength / textLength));
-        display.style.fontSize = `${fontSize}em`;
-
-        // Prevent moving the text upward
-        display.style.transform = 'translateY(0)'; // No vertical movement
+        display.style.fontSize = `${fontSize}em`;  // Only change the font size of the display
     } else {
         display.style.fontSize = `${maxFontSize}em`; // Default font size
-        display.style.transform = 'translateY(0)'; // Reset position if text is within limit
     }
 }
 
