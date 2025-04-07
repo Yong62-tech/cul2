@@ -19,14 +19,12 @@ function adjustDisplay() {
 
     // Calculate the font size based on the number of characters
     if (textLength > maxLength) {
-        // Reduce font size starting at 14 characters
         const fontSize = Math.max(minFontSize, maxFontSize * (maxLength / textLength));
         display.style.fontSize = `${fontSize}em`;  // Only change the font size of the display
     } else {
         display.style.fontSize = `${maxFontSize}em`; // Default font size
     }
 }
-
 
 // 向显示屏追加内容
 function appendToDisplay(value) {
