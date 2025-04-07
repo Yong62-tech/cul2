@@ -11,7 +11,7 @@ let resultCalculated = false;
 // Initial font size and settings
 const maxFontSize = 2; // Default font size (in em)
 const minFontSize = 0.8; // Minimum font size when display is full
-const maxLength = 15; // Max number of characters before shrinking font size
+const maxLength = 14; // Max number of characters before shrinking font size
 
 // Function to adjust font size and position based on the length of the input
 function adjustDisplay() {
@@ -19,12 +19,12 @@ function adjustDisplay() {
 
     // Calculate the font size based on the number of characters
     if (textLength > maxLength) {
+        // Reduce font size starting at 14 characters
         const fontSize = Math.max(minFontSize, maxFontSize * (maxLength / textLength));
         display.style.fontSize = `${fontSize}em`;
 
-        // Move the text upwards as it overflows
-        const overflowAmount = (textLength - maxLength) * 0.2; // Amount to move up based on overflow
-        display.style.transform = `translateY(-${overflowAmount}em)`; // Moves text upwards
+        // Prevent moving the text upward
+        display.style.transform = 'translateY(0)'; // No vertical movement
     } else {
         display.style.fontSize = `${maxFontSize}em`; // Default font size
         display.style.transform = 'translateY(0)'; // Reset position if text is within limit
