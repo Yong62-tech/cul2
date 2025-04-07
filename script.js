@@ -11,7 +11,7 @@ let resultCalculated = false;
 // Initial font size and settings
 const maxFontSize = 2; // Default font size (in em)
 const minFontSize = 0.8; // Minimum font size when display is full
-const maxLength = 14; // Max number of characters before shrinking font size
+const maxLength = 13; // Max number of characters before shrinking font size
 
 // Function to adjust font size and position based on the length of the input
 function adjustDisplay() {
