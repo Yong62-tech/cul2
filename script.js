@@ -27,6 +27,7 @@ function adjustDisplay() {
     }
 }
 
+
 // 向显示屏追加内容
 function appendToDisplay(value) {
     const lastChar = display.value.slice(-1);
